@@ -4,8 +4,8 @@ Run with:  python app.py
 Then open: http://127.0.0.1:5000
 """
 
-from flask import Flask, render_template, request, jsonify, g
-from flask import Flask, render_template, request, jsonify, g
+from flask import Flask, render_template, request, jsonify, g, session, redirect, url_for
+from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
 import os
 from datetime import datetime
