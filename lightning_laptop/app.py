@@ -14,7 +14,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "lightning_laptop.db")
 
 app = Flask(__name__)
-
+app.secret_key = "lightning_secret_key"
 
 # ---------------------------------------------------------------------
 # Database helpers
@@ -122,6 +122,26 @@ def signup():
         return "Signup Successful!"
     except sqlite3.IntegrityError:
         return "Email already exists!"
+    @app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "GET":
+        return render_template("login.html")
+
+    email = request.form["email"]
+    password = request.form["password"]
+
+    db = get_db()
+    user = db.execute(
+        "SELECT * FROM users WHERE email = ?",
+        (email,)
+    ).fetchone()
+
+    if user and check_password_hash(user["password"], password):
+        session["user_id"] = user["id"]
+        session["username"] = user["username"]
+        return redirect("/")
+
+    return "Invalid Email or Password!"
 
 
 # ---------------------------------------------------------------------
