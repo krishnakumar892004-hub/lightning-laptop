@@ -109,9 +109,14 @@ def signup():
     if request.method == "GET":
         return render_template("signup.html")
 
+    print("Signup request received")
+
     username = request.form["username"]
     email = request.form["email"]
     password = generate_password_hash(request.form["password"])
+
+    print("Username:", username)
+    print("Email:", email)
 
     db = get_db()
 
@@ -121,9 +126,13 @@ def signup():
             (username, email, password)
         )
         db.commit()
+
+        print("User inserted successfully")
         return "Signup Successful!"
-    except sqlite3.IntegrityError:
-        return "Email already exists!"
+
+    except Exception as e:
+        print("ERROR:", e)
+        return str(e)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
