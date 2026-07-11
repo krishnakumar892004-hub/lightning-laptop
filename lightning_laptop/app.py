@@ -5,6 +5,7 @@ Then open: http://127.0.0.1:5000
 """
 
 from flask import Flask, render_template, request, jsonify, g
+from flask import Flask, render_template, request, jsonify, g
 import sqlite3
 import os
 from datetime import datetime
@@ -101,6 +102,26 @@ def init_db():
 @app.route("/")
 def home():
     return render_template("index.html")
+@app.route("/signup", methods=["GET", "POST"])
+def signup():
+    if request.method == "GET":
+        return render_template("signup.html")
+
+    username = request.form["username"]
+    email = request.form["email"]
+    password = generate_password_hash(request.form["password"])
+
+    db = get_db()
+
+    try:
+        db.execute(
+            "INSERT INTO users (username, email, password) VALUES (?, ?, ?)",
+            (username, email, password)
+        )
+        db.commit()
+        return "Signup Successful!"
+    except sqlite3.IntegrityError:
+        return "Email already exists!"
 
 
 # ---------------------------------------------------------------------
