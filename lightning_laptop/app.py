@@ -142,6 +142,10 @@ def login():
         return redirect("/")
 
     return "Invalid Email or Password!"
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/")
 
 
 # ---------------------------------------------------------------------
